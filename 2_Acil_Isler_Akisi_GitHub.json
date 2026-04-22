@@ -1,0 +1,97 @@
+﻿{
+  "name": "2 - Acil Ä°ÅŸler AkÄ±ÅŸÄ±",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "08a4d24b-f0fd-4223-a8ce-b9421a1f7253"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "durum",
+              "value": "Acil"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Durumu Acil Yap",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "1adca0a8-c08c-4000-b108-ea11d58f9681"
+    },
+    {
+      "parameters": {
+        "sendTo": "[KENDI_MAIL_ADRESINIZ]",
+        "subject": "=ACÄ°L Ä°Å: {{$json.konu}} (Skor: {{$json.skor}})",
+        "message": "=Yeni bir acil iÅŸ talebi geldi!\n\nGÃ¶nderen: {{$json.gonderen}}\nKategori: {{$json.kategori}}\nÃ–zet: {{$json.ozet}}\n\nLÃ¼tfen en kÄ±sa sÃ¼rede kontrol ediniz.",
+        "options": {}
+      },
+      "name": "Freelancer'a UyarÄ± GÃ¶nder",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [
+        400,
+        0
+      ],
+      "id": "fc6ba267-5c8b-4e43-b8af-f8df10247e55",
+      "webhookId": "03a7bf3a-8cc2-4340-8319-2ffb6445d8a2",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "q7BdB33wPr5jgHB8",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Durumu Acil Yap",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Durumu Acil Yap": {
+      "main": [
+        [
+          {
+            "node": "Freelancer'a UyarÄ± GÃ¶nder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "c4b720e5-e8e2-4065-b6d7-3f35ab0580ab",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4d9a240768d4bd91604ea2e5e3a8980f09f6e4016fd18c0f4af179476aeec436"
+  },
+  "id": "V6PktZY595OMnemz",
+  "tags": []
+}

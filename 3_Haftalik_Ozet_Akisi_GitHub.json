@@ -1,0 +1,142 @@
+﻿{
+  "name": "3 - HaftalÄ±k Ã–zet AkÄ±ÅŸÄ±",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * 1"
+            }
+          ]
+        }
+      },
+      "name": "Schedule Trigger (Her Pazartesi 09:00)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "2ab6b8cc-de78-432b-b85e-eef5c131437e"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "[GOOGLE_SHEET_ID_BURAYA]",
+          "mode": "list",
+          "cachedResultName": "GelenTalepler",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/[GOOGLE_SHEET_ID_BURAYA]/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sayfa1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/[GOOGLE_SHEET_ID_BURAYA]/edit#gid=0"
+        },
+        "options": {}
+      },
+      "name": "Google Sheets (Veri Oku)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "94cc11cd-a74c-413c-8481-ebfdb9632e6f",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "XOTAp6OijySwklQ7",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const veriler = $input.all().map(item => item.json);\n\nlet toplam_is = veriler.length;\nlet acil_is = 0;\nlet kategori_dagilimi = {};\n\nfor (let is of veriler) {\n  if (is.skor >= 8 || is.durum === 'Acil') acil_is++;\n  \n  let kat = is.kategori || 'Bilinmiyor';\n  if (kategori_dagilimi[kat]) {\n    kategori_dagilimi[kat]++;\n  } else {\n    kategori_dagilimi[kat] = 1;\n  }\n}\n\nlet ozet_metin = `HaftalÄ±k Ä°ÅŸ Ã–zeti:\\n\\nToplam Gelen Talep: ${toplam_is}\\nAcil/Ã–nemli Talep: ${acil_is}\\n\\nKategori DaÄŸÄ±lÄ±mÄ±:\\n`;\n\nfor (let kat in kategori_dagilimi) {\n  ozet_metin += `- ${kat}: ${kategori_dagilimi[kat]}\\n`;\n}\n\nreturn [{\n  json: {\n    haftalik_ozet: ozet_metin\n  }\n}];"
+      },
+      "name": "Verileri Ã–zetle (Code Node)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        400,
+        0
+      ],
+      "id": "dcacdcba-9201-403e-8c39-739f9c3e10ab"
+    },
+    {
+      "parameters": {
+        "sendTo": "[KENDI_MAIL_ADRESINIZ]",
+        "subject": "HaftalÄ±k Ä°ÅŸ Ã–zeti Raporu",
+        "message": "={{$json.haftalik_ozet}}",
+        "options": {}
+      },
+      "name": "Gmail (Rapor GÃ¶nder)",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [
+        608,
+        0
+      ],
+      "id": "04b39168-10ac-44b8-b99f-8ea907496328",
+      "webhookId": "b4416419-931a-4bb7-98ec-7ff19fea6b1e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "q7BdB33wPr5jgHB8",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger (Her Pazartesi 09:00)": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets (Veri Oku)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets (Veri Oku)": {
+      "main": [
+        [
+          {
+            "node": "Verileri Ã–zetle (Code Node)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verileri Ã–zetle (Code Node)": {
+      "main": [
+        [
+          {
+            "node": "Gmail (Rapor GÃ¶nder)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "6340f848-b07d-43f7-b6a3-2e12ba926e8a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4d9a240768d4bd91604ea2e5e3a8980f09f6e4016fd18c0f4af179476aeec436"
+  },
+  "id": "CGkZMAbluOTJ1P3L",
+  "tags": []
+}

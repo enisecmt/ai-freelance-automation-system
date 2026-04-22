@@ -1,0 +1,244 @@
+﻿{
+  "name": "1 - Ana AkÄ±ÅŸ (Gelen Talep Ä°ÅŸleme)",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {
+          "labelIds": [
+            "INBOX"
+          ]
+        }
+      },
+      "name": "Gmail Trigger",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        160
+      ],
+      "id": "3137ed78-aae3-47f4-8c27-f34cd57441e7",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "q7BdB33wPr5jgHB8",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.skor }}",
+              "operation": "largerEqual",
+              "value2": 8
+            }
+          ]
+        }
+      },
+      "name": "Acil mi?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        160
+      ],
+      "id": "fddf9432-f70e-433f-9670-e3361d0473e7"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "[GOOGLE_SHEET_ID_BURAYA]",
+          "mode": "list",
+          "cachedResultName": "GelenTalepler",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/[GOOGLE_SHEET_ID_BURAYA]/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sayfa1",
+          "mode": "name"
+        },
+        "dataMode": "autoMapInputData",
+        "options": {}
+      },
+      "name": "Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "6d49ea39-56ca-4f21-9f3c-715436d711b6",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "XOTAp6OijySwklQ7",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "Re: {{$json.konu}}",
+        "message": "={{$json.cevap_taslagi}}",
+        "options": {}
+      },
+      "name": "Gmail Draft",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "36c9de9b-0e87-420f-ad2c-a2db217f8a0a",
+      "webhookId": "0531a9e0-78f1-4852-aa27-e5fada67e773",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "q7BdB33wPr5jgHB8",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": "V6Pkt7Y595OMnemz",
+        "options": {}
+      },
+      "name": "Acil Ä°ÅŸler AkÄ±ÅŸÄ±nÄ± Tetikle",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        0,
+        304
+      ],
+      "id": "ae39c23d-c5be-459d-89dd-8a46447245c7"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=[BURAYA_KENDI_API_ANAHTARINIZI_YAZIN]",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"AÅŸaÄŸÄ±daki mÃ¼ÅŸteri e-postasÄ±nÄ± analiz et. YALNIZCA geÃ§erli bir JSON nesnesi dÃ¶ndÃ¼r, baÅŸka hiÃ§bir ÅŸey yazma: { \\\"kategori\\\": \\\"sosyal_medya|tasarim|web|diger\\\", \\\"oncelik\\\": \\\"yuksek|orta|dusuk\\\", \\\"skor\\\": 1-10, \\\"ozet\\\": \\\"E-postanÄ±n 2 cÃ¼mlelik Ã¶zeti\\\", \\\"cevap_taslagi\\\": \\\"MÃ¼ÅŸteriye yazÄ±lacak profesyonel ilk yanÄ±t taslaÄŸÄ±.\\\" } \\n\\n E-Posta Ä°Ã§eriÄŸi: {{ $('Gmail Trigger').item.json.textPlain }}\"\n        }\n      ]\n    }\n  ]\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -592,
+        160
+      ],
+      "id": "554f8837-d898-42aa-9fb2-cc96264645d2",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $input.all()[0].json.candidates[0].content.parts[0].text;\nlet cleanText = text.replace(/```json/g, \"\").replace(/```/g, \"\").trim();\nlet aiData = JSON.parse(cleanText);\n\nlet result = {};\n\n// Tabloya eklenecek ekstra veriler (Zaman, Ä°sim, Mail):\nresult[\"Tarih\"] = new Date().toLocaleDateString('tr-TR');\nresult[\"GÃ¶nderen Mail\"] = $('Gmail Trigger').first().json.From.split('<').pop().replace('>', ''); \nresult[\"MÃ¼ÅŸteri AdÄ±\"] = $('Gmail Trigger').first().json.From.split('<')[0].trim();\nresult[\"Durum\"] = \"Yeni BaÅŸvuru\";\n\n// n8n'deki diÄŸer kutular bozulmasÄ±n diye onlara eski isimleriyle veriyoruz:\nresult[\"konu\"] = $('Gmail Trigger').first().json.Subject;\nresult[\"kategori\"] = aiData.kategori;\nresult[\"skor\"] = aiData.skor;\nresult[\"ozet\"] = aiData.ozet;\nresult[\"cevap_taslagi\"] = aiData.cevap_taslagi;\n\nreturn result;\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -384,
+        160
+      ],
+      "id": "52e118f7-5bc4-44c8-8383-5714619c6bf2",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Acil mi?": {
+      "main": [
+        [
+          {
+            "node": "Acil Ä°ÅŸler AkÄ±ÅŸÄ±nÄ± Tetikle",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Gmail Draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Acil mi?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail Draft": {
+      "main": [
+        [
+          {
+            "node": "Acil mi?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "bb713815-630b-4843-9803-4354d50d2330",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4d9a240768d4bd91604ea2e5e3a8980f09f6e4016fd18c0f4af179476aeec436"
+  },
+  "id": "o29cKWL5IcEDUvkO",
+  "tags": []
+}
