@@ -10,9 +10,9 @@ Yoğun mesaj trafiği arasında kaybolmayı önlemek amacıyla geliştirilen bu 
 ## 🛠 Kullanılan Teknolojiler
 Sistem, modern No-Code ve AI araçlarının güçlü bir kombinasyonundan oluşmaktadır:
 
-* **n8n:** Uçtan uca otomasyon akışının (workflow) kurgulanması.
-* **Google Gemini 2.5 Flash API:** E-postaların anlamsal analizi ve skorlanması.
-* **Google Workspace (Gmail):** Veri kaynağı (Trigger) ve taslak (Draft) yönetimi.
+* **n8n:** Uçtan uca otomasyon akışının (workflow) kurgulanması ve yönetimi.
+* **Google Gemini 2.5 Flash API:** E-postaların anlamsal analizi, skorlanması ve yanıt taslağı üretilmesi.
+* **Google Workspace (Gmail):** Veri kaynağı (Trigger) ve çıktı (Draft) entegrasyonu.
 * **Google Sheets:** Dinamik veritabanı yönetimi.
 * **Google Sites:** Canlı yönetim paneli (Dashboard) arayüzü.
 
