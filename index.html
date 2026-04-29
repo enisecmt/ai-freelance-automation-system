@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Freelance Müşteri Yönetim Sistemi</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink: #131210;
+  --ink2: #4a4844;
+  --ink3: #8a8782;
+  --paper: #f7f6f1;
+  --paper2: #eeecea;
+  --paper3: #e4e2dc;
+  --accent: #1a1916;
+  --gold: #c49a3c;
+  --gold-light: #f5edd6;
+  --border: #dedad2;
+  --radius: 12px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(247,246,241,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2.5rem;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 14px; font-weight: 600; letter-spacing: -0.01em;
+}
+.nav-logo-icon {
+  width: 32px; height: 32px;
+  background: var(--ink);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 15px;
+}
+.nav-links { display: flex; align-items: center; gap: 2rem; }
+.nav-links a {
+  font-size: 13px; color: var(--ink2); text-decoration: none;
+  transition: color 0.15s;
+}
+.nav-links a:hover { color: var(--ink); }
+.nav-cta {
+  background: var(--ink); color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 500;
+  padding: 8px 18px; border-radius: 8px;
+  text-decoration: none; border: none; cursor: pointer;
+  transition: opacity 0.15s;
+}
+.nav-cta:hover { opacity: 0.85; }
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 7rem 2rem 4rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, #e8e4d8 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--gold-light);
+  border: 1px solid #e8d5a0;
+  color: #8a6820;
+  font-size: 12px; font-weight: 500;
+  padding: 5px 14px; border-radius: 20px;
+  margin-bottom: 2rem;
+  animation: fadeDown 0.6s ease both;
+}
+.hero-badge-dot { width: 6px; height: 6px; background: var(--gold); border-radius: 50%; }
+.hero-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  max-width: 760px;
+  margin-bottom: 1.5rem;
+  animation: fadeDown 0.6s ease 0.1s both;
+}
+.hero-title em { font-style: italic; color: var(--ink2); }
+.hero-sub {
+  font-size: 17px; color: var(--ink2); font-weight: 300;
+  max-width: 520px; line-height: 1.65;
+  margin-bottom: 2.5rem;
+  animation: fadeDown 0.6s ease 0.2s both;
+}
+.hero-actions {
+  display: flex; align-items: center; gap: 12px;
+  animation: fadeDown 0.6s ease 0.3s both;
+  flex-wrap: wrap; justify-content: center;
+}
+.btn-primary {
+  background: var(--ink); color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px; font-weight: 500;
+  padding: 13px 28px; border-radius: 10px;
+  text-decoration: none; border: none; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+.btn-secondary {
+  background: transparent; color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px; font-weight: 500;
+  padding: 13px 24px; border-radius: 10px;
+  text-decoration: none;
+  border: 1px solid var(--border);
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: background 0.15s, transform 0.15s;
+}
+.btn-secondary:hover { background: var(--paper2); transform: translateY(-1px); }
+
+.hero-stats {
+  display: flex; align-items: center; gap: 2.5rem;
+  margin-top: 4rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--border);
+  animation: fadeDown 0.6s ease 0.4s both;
+}
+.stat { text-align: center; }
+.stat-num { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--ink); }
+.stat-label { font-size: 12px; color: var(--ink3); margin-top: 2px; }
+.stat-divider { width: 1px; height: 40px; background: var(--border); }
+
+@keyframes fadeDown { from{opacity:0;transform:translateY(-12px)} to{opacity:1;transform:none} }
+
+/* TECH STRIP */
+.tech-strip {
+  background: var(--ink);
+  color: rgba(255,255,255,0.5);
+  padding: 1rem 2rem;
+  display: flex; align-items: center; justify-content: center;
+  gap: 2.5rem;
+  font-size: 12px; font-weight: 500; letter-spacing: 0.06em;
+  text-transform: uppercase;
+  flex-wrap: wrap;
+}
+.tech-item { display: flex; align-items: center; gap: 7px; }
+.tech-item span { color: rgba(255,255,255,0.25); }
+
+/* SECTIONS */
+section { padding: 6rem 2rem; }
+.container { max-width: 1100px; margin: 0 auto; }
+.section-label {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ink3);
+  margin-bottom: 1rem;
+}
+.section-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 400; line-height: 1.2;
+  letter-spacing: -0.02em; color: var(--ink);
+  margin-bottom: 1rem;
+}
+.section-sub { font-size: 16px; color: var(--ink2); font-weight: 300; max-width: 540px; line-height: 1.65; }
+
+/* FEATURES */
+.features-bg { background: var(--paper2); }
+.features-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1px; background: var(--border);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  overflow: hidden; margin-top: 3rem;
+}
+.feature-card {
+  background: var(--paper);
+  padding: 2rem;
+  transition: background 0.2s;
+}
+.feature-card:hover { background: #fff; }
+.feature-num {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2rem; color: var(--paper3);
+  margin-bottom: 1rem; line-height: 1;
+}
+.feature-title { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+.feature-desc { font-size: 13px; color: var(--ink2); line-height: 1.65; }
+
+/* FLOW */
+.flow-section { background: var(--paper); }
+.flow-steps {
+  display: flex; flex-direction: column; gap: 0;
+  margin-top: 3rem; position: relative;
+}
+.flow-step {
+  display: grid; grid-template-columns: 60px 1fr;
+  gap: 0 1.5rem; position: relative;
+}
+.flow-step-left {
+  display: flex; flex-direction: column; align-items: center;
+}
+.flow-circle {
+  width: 44px; height: 44px;
+  background: var(--ink); color: #fff;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 600;
+  flex-shrink: 0; position: relative; z-index: 1;
+}
+.flow-line {
+  width: 1px; background: var(--border);
+  flex: 1; margin: 4px 0;
+  min-height: 2.5rem;
+}
+.flow-step:last-child .flow-line { display: none; }
+.flow-content {
+  padding: 0 0 2.5rem;
+  padding-top: 10px;
+}
+.flow-tag {
+  display: inline-block;
+  font-size: 10px; font-weight: 600; letter-spacing: 0.07em;
+  text-transform: uppercase; color: var(--ink3);
+  background: var(--paper2); border: 1px solid var(--border);
+  padding: 2px 8px; border-radius: 4px;
+  margin-bottom: 6px;
+}
+.flow-title { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+.flow-desc { font-size: 13px; color: var(--ink2); line-height: 1.65; }
+
+/* CTA SECTION */
+.cta-section {
+  background: var(--ink);
+  color: #fff; text-align: center;
+  padding: 7rem 2rem;
+}
+.cta-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 400; line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.25rem;
+}
+.cta-title em { font-style: italic; color: rgba(255,255,255,0.5); }
+.cta-sub { font-size: 16px; color: rgba(255,255,255,0.5); font-weight: 300; margin-bottom: 2.5rem; }
+.btn-white {
+  background: #fff; color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px; font-weight: 600;
+  padding: 15px 36px; border-radius: 10px;
+  text-decoration: none; border: none; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 10px;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.btn-white:hover { opacity: 0.92; transform: translateY(-2px); }
+.cta-note { font-size: 12px; color: rgba(255,255,255,0.3); margin-top: 1rem; }
+
+/* FOOTER */
+footer {
+  background: var(--paper2);
+  border-top: 1px solid var(--border);
+  padding: 2rem 2.5rem;
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 12px; color: var(--ink3);
+  flex-wrap: wrap; gap: 1rem;
+}
+.footer-team { display: flex; gap: 1.5rem; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-icon">✉</div>
+    AI Freelance Sistemi
+  </div>
+  <div class="nav-links">
+    <a href="#ozellikler">Özellikler</a>
+    <a href="#nasil-calisir">Nasıl Çalışır</a>
+    <a href="#panel" class="nav-cta" target="_blank">Paneli Aç →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">
+    <div class="hero-badge-dot"></div>
+    P2P 2 — No Code / Low Code Challenge
+  </div>
+  <h1 class="hero-title">
+    Müşteri taleplerini <em>yapay zeka</em> yönetsin
+  </h1>
+  <p class="hero-sub">
+    Gmail'e düşen her talep saniyeler içinde analiz edilir, önceliklendirilir ve yanıt taslağı hazırlanır. Siz sadece onaylayın.
+  </p>
+  <div class="hero-actions">
+    <a href="#panel" class="btn-primary" onclick="openPanel(event)">
+      ↗ Yönetim Panelini Aç
+    </a>
+    <a href="#nasil-calisir" class="btn-secondary">
+      Nasıl çalışır?
+    </a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">~15sn</div>
+      <div class="stat-label">Talep işleme süresi</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <div class="stat-num">%90+</div>
+      <div class="stat-label">Otomasyon oranı</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <div class="stat-num">3</div>
+      <div class="stat-label">Aktif workflow</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <div class="stat-num">0</div>
+      <div class="stat-label">Manuel işlem</div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH STRIP -->
+<div class="tech-strip">
+  <div class="tech-item">n8n <span>·</span></div>
+  <div class="tech-item">Google Gemini 2.5 Flash <span>·</span></div>
+  <div class="tech-item">Gmail <span>·</span></div>
+  <div class="tech-item">Google Sheets <span>·</span></div>
+  <div class="tech-item">Google Sites</div>
+</div>
+
+<!-- FEATURES -->
+<section class="features-bg" id="ozellikler">
+  <div class="container">
+    <div class="section-label">Özellikler</div>
+    <h2 class="section-title">Sistemin yaptıkları</h2>
+    <p class="section-sub">Freelancer ve küçük ekiplerin e-posta yönetiminde yaşadığı her soruna somut çözüm.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-num">01</div>
+        <div class="feature-title">Sıfır Temassız Kayıt</div>
+        <div class="feature-desc">Gmail'e gelen her talep otomatik yakalanır. Hiçbir manuel işlem gerekmez, sistem 7/24 gözetler.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">02</div>
+        <div class="feature-title">Bağlamsal AI Analizi</div>
+        <div class="feature-desc">Gemini 2.5 Flash e-postayı okur; kategori, 1–10 öncelik skoru ve iki cümlelik özet üretir.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">03</div>
+        <div class="feature-title">Akıllı Yönlendirme</div>
+        <div class="feature-desc">Skor 8 ve üzeri talepler otomatik olarak "Acil İşler" akışına alınır, kaybolmaz.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">04</div>
+        <div class="feature-title">Otomatik Yanıt Taslağı</div>
+        <div class="feature-desc">AI talebin içeriğine özel profesyonel bir yanıt yazar. Gmail taslağına düşer, siz sadece gönderin.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">05</div>
+        <div class="feature-title">Canlı Dashboard</div>
+        <div class="feature-desc">Tüm talepler, kategoriler, skorlar ve özetler tek ekrandan anlık olarak izlenir.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">06</div>
+        <div class="feature-title">Haftalık Özet Raporu</div>
+        <div class="feature-desc">Her Pazartesi sabahı geçen haftanın iş dağılımı otomatik olarak e-posta ile gönderilir.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="flow-section" id="nasil-calisir">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;">
+      <div>
+        <div class="section-label">Sistem Akışı</div>
+        <h2 class="section-title">Nasıl çalışır?</h2>
+        <p class="section-sub">Gmail'den başlayıp yanıt taslağına kadar her adım otomatik. Sadece son onay sizden.</p>
+      </div>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="flow-step-left">
+            <div class="flow-circle">1</div>
+            <div class="flow-line"></div>
+          </div>
+          <div class="flow-content">
+            <div class="flow-tag">Gmail Trigger</div>
+            <div class="flow-title">Talep alınır</div>
+            <div class="flow-desc">Müşteri e-posta gönderir. n8n anında devreye girerek akışı başlatır.</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-left">
+            <div class="flow-circle">2</div>
+            <div class="flow-line"></div>
+          </div>
+          <div class="flow-content">
+            <div class="flow-tag">Gemini API</div>
+            <div class="flow-title">AI analiz eder</div>
+            <div class="flow-desc">E-posta içeriği Gemini'ye gönderilir. Kategori, öncelik skoru, özet ve yanıt taslağı üretilir.</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-left">
+            <div class="flow-circle">3</div>
+            <div class="flow-line"></div>
+          </div>
+          <div class="flow-content">
+            <div class="flow-tag">IF Node</div>
+            <div class="flow-title">Acil mi kontrol edilir</div>
+            <div class="flow-desc">Skor 8+ ise Acil İşler akışı tetiklenir ve öncelikli işleme alınır.</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-left">
+            <div class="flow-circle">4</div>
+            <div class="flow-line"></div>
+          </div>
+          <div class="flow-content">
+            <div class="flow-tag">Google Sheets</div>
+            <div class="flow-title">Veritabanına kaydedilir</div>
+            <div class="flow-desc">Tüm veriler otomatik olarak tabloya eklenir, dashboard güncellenir.</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-left">
+            <div class="flow-circle">5</div>
+          </div>
+          <div class="flow-content">
+            <div class="flow-tag">Gmail Draft</div>
+            <div class="flow-title">Yanıt taslağı hazır</div>
+            <div class="flow-desc">AI'ın yazdığı profesyonel yanıt Gmail Taslaklar'a düşer. Siz gözden geçirip gönderin.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="panel">
+  <div class="container">
+    <h2 class="cta-title">Sistemi <em>canlı</em> görün</h2>
+    <p class="cta-sub">Gerçek verilerle çalışan yönetim panelini açın.</p>
+    <a href="https://enisecmt.github.io/ai-freelance-automation-system/dashboard.html" target="_blank" class="btn-white">
+      ↗ Yönetim Panelini Aç
+    </a>
+    <p class="cta-note">Google Sheets ile canlı senkronize · Gerçek zamanlı güncelleme</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>AI Freelance Müşteri Yönetim Sistemi · P2P 2 No Code / Low Code Challenge · 2026</div>
+  <div class="footer-team">
+    <span>Enise Cömet</span>
+    <span>Sena Nur Uysak</span>
+    <span>Helin Ersuy</span>
+  </div>
+</footer>
+
+<script>
+function openPanel(e) {
+  e.preventDefault();
+  window.open('https://enisecmt.github.io/ai-freelance-automation-system/dashboard.html', '_blank');
+}
+</script>
+</body>
+</html>
