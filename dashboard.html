@@ -350,7 +350,7 @@ code{font-family:'DM Mono',monospace;background:var(--paper2);padding:1px 5px;bo
         <div class="mf"><label>Durum</label><p id="m-durum">—</p></div>
         <div class="mf"><label>Gönderen</label><p id="m-mail">—</p></div>
       </div>
-      <div class="mf"><label>AI Cevap Taslağı</label><div class="taslak-box" id="m-taslak">—</div></div>
+      <div class="mf"><label>AI Cevap Taslağı</label><div class="taslak-box" id="m-taslak-box">—</div></div>
     </div>
   </div>
 </div>
@@ -552,7 +552,7 @@ function openModal(idx){
   document.getElementById('m-ozet').textContent=gf(r,'ozet','özet')||'—';
   document.getElementById('m-durum').textContent=gf(r,'durum')||'—';
   document.getElementById('m-mail').textContent=mail||'—';
-  document.getElementById('m-taslak').textContent=gf(r,'cevap_taslagi','cevap taslagi','taslak')||'Taslak bulunamadı';
+  document.getElementById('m-taslak-box').textContent=gf(r,'cevap_taslagi','cevap taslagi','taslak')||'Taslak bulunamadı';
   document.getElementById('overlay').classList.add('open');
 }
 function closeModal(e){if(e.target===document.getElementById('overlay'))closeModalDirect();}
