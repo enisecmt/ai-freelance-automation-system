@@ -238,7 +238,7 @@ code { font-family:'DM Mono',monospace; background:var(--paper2); padding:1px 5p
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Tarih</th><th>Gönderen</th><th>Konu</th><th>Kategori</th><th>Skor</th><th>Özet</th></tr></thead>
+            <thead><tr><th>Tarih</th><th>Gönderen</th><th>Konu</th><th>Kategori</th><th>Skor</th><th>Özet</th><th>Durum</th><th>Cevap Taslağı</th></tr></thead>
             <tbody id="table-body"><tr><td colspan="6" class="table-msg"><div class="spinner"></div><br>Yükleniyor...</td></tr></tbody>
           </table>
         </div>
@@ -404,7 +404,11 @@ function renderTable(){
     const idx=allData.indexOf(r);
     const katClass=kat.toLowerCase().includes('web')?'cat-web':kat.toLowerCase().includes('grafik')||kat.toLowerCase().includes('tasarım')?'cat-grafik':kat.toLowerCase().includes('sosyal')?'cat-sosyal':kat.toLowerCase().includes('acil')?'cat-acil':'cat-diger';
     const skorClass=skor>=8?'skor-high':skor>=5?'skor-mid':'skor-low';
-    return`<tr onclick="openModal(${idx})"><td class="td-date">${tarih.replace('T',' ').substring(0,16)}</td><td><div class="td-sender-name">${musteri||mail.split('@')[0]}</div><div class="td-sender-email">${mail}</div></td><td class="td-subject">${konu}</td><td><span class="cat-badge ${katClass}">${kat||'—'}</span></td><td><div class="skor-wrap ${skorClass}"><span class="skor-num">${skor}</span><div class="skor-bar"><div class="skor-fill" style="width:${skor*10}%"></div></div></div></td><td class="td-ozet">${ozet}</td></tr>`;
+    const durum=getField(r,'durum');
+    const taslak=getField(r,'cevap_taslagi','cevap taslagi','taslak');
+    const shortTaslak=taslak.length>40?taslak.substring(0,40)+'...':taslak;
+    const durumClass=durum.toLowerCase().includes('acil')?'cat-acil':durum.toLowerCase().includes('tamam')||durum.toLowerCase().includes('tamamland')?'cat-web':'cat-diger';
+    return`<tr onclick="openModal(${idx})"><td class="td-date">${tarih.replace('T',' ').substring(0,16)}</td><td><div class="td-sender-name">${musteri||mail.split('@')[0]}</div><div class="td-sender-email">${mail}</div></td><td class="td-subject">${konu}</td><td><span class="cat-badge ${katClass}">${kat||'—'}</span></td><td><div class="skor-wrap ${skorClass}"><span class="skor-num">${skor}</span><div class="skor-bar"><div class="skor-fill" style="width:${skor*10}%"></div></div></div></td><td class="td-ozet">${ozet}</td><td>${durum?`<span class="cat-badge ${durumClass}">${durum}</span>`:'—'}</td><td class="td-ozet">${shortTaslak||'—'}</td></tr>`;
   }).join('');
 }
 function renderDonut(){
