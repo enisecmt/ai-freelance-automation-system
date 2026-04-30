@@ -363,7 +363,7 @@ let allData=[],activeFilter='Tümü',sheetsUrl='';
 function saveConfig(){
   const url=document.getElementById('sheets-input').value.trim();
   if(!url)return;
-  sheetsUrl=url;showDash();loadData();
+  sheetsUrl=url;sessionStorage.setItem('sheets_url',url);showDash();loadData();
 }
 function showDash(){
   document.getElementById('cfg').style.display='none';
@@ -424,7 +424,7 @@ function render(){updateMetrics();buildFilters();renderCards();renderCats();rend
 
 function updateMetrics(){
   const total=allData.length;
-  const taslak=allData.filter(r=>gf(r,'cevap','taslak')).length;
+  const taslak=allData.filter(r=>gf(r,'cevap_taslagi','cevap taslagi')).length;
   const acil=allData.filter(r=>parseInt(gf(r,'skor'))>=8).length;
   const cats=new Set(allData.map(r=>gf(r,'kategori').toLowerCase()).filter(Boolean)).size;
   document.getElementById('m-total').textContent=total;
@@ -534,7 +534,7 @@ function renderActivity(){
     const konu=gf(r,'konu');const skor=parseInt(gf(r,'skor'))||0;
     const tarih=gf(r,'tarih');
     const time=tarih?(tarih.split('T')[1]?.substring(0,5)||tarih.substring(11,16)):'';
-    const pip=skor>=8?'r':gf(r,'cevap','taslak')?'g':'b';
+    const pip=skor>=8?'r':gf(r,'cevap_taslagi','cevap taslagi')?'g':'b';
     const action=skor>=8?'acil talep alındı':'için taslak üretildi';
     const short=konu.length>24?konu.substring(0,24)+'...':konu;
     return`<div class="act-item"><div class="act-pip ${pip}"></div><div class="act-txt"><strong>"${short}"</strong> ${action}</div><div class="act-time">${time}</div></div>`;
@@ -560,7 +560,9 @@ function closeModalDirect(){document.getElementById('overlay').classList.remove(
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModalDirect();});
 
 window.addEventListener('DOMContentLoaded',()=>{
-  document.getElementById('cfg').style.display='flex';
+  const saved=sessionStorage.getItem('sheets_url');
+  if(saved){sheetsUrl=saved;document.getElementById('sheets-input').value=saved;showDash();loadData();}
+  else document.getElementById('cfg').style.display='flex';
 });
 </script>
 </body>
