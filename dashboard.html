@@ -436,7 +436,7 @@ function updateMetrics(){
 }
 function buildFilters(){
   const cats=['Tümü',...new Set(allData.map(r=>{const c=gf(r,'kategori');return c?c.charAt(0).toUpperCase()+c.slice(1):'';}).filter(Boolean))];
-  document.getElementById('filter-chips').innerHTML=cats.map(c=>`<button class="filter-chip${c===activeFilter?' active':''}" onclick="setFilter('${c}',this)">${c}</button>`).join('');
+  document.getElementById('filter-chips').innerHTML=cats.map(c=>`<button class="filter-chip${c===activeFilter?' active':''}" onclick="setFilter('${c}',this)">${c.replace("_", " ")}</button>`).join('');
 }
 function setFilter(cat,btn){
   activeFilter=cat;document.querySelectorAll('.filter-chip').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderCards();
