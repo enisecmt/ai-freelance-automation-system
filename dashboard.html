@@ -351,7 +351,7 @@ function parseCSV(text){
   const headers=rows[0].map(h=>h.trim().toLowerCase());
   return rows.slice(1).map(vals=>{
     const obj={};headers.forEach((h,i)=>obj[h]=(vals[i]||'').trim());return obj;
-  }).filter(r=>headers.some(h=>r[h]&&r[h].length>0));
+  }).filter(r=>(r["tarih"]||r["konu"]||r["gönderen mail"]||"").trim().length>2);
 }
 function getField(row,...keys){
   for(const k of keys){
